@@ -1,0 +1,6 @@
+@ParklaysBackend_HostAddress = http://localhost:5049
+
+GET {{ParklaysBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
