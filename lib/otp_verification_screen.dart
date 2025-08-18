@@ -86,7 +86,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../services/auth_service.dart';
-import 'profile_setup_screen.dart';
+import 'dashboard_screen.dart';
 
 class OTPVerificationScreen extends StatelessWidget {
   final TextEditingController _otpController = TextEditingController();
@@ -127,9 +127,7 @@ class OTPVerificationScreen extends StatelessWidget {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (_) => ProfileSetupScreen(phoneNumber: phoneNumber),
-        ),
+        MaterialPageRoute(builder: (context) => DashboardScreen()),
       );
     }
   } catch (e) {
