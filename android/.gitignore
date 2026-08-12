@@ -11,3 +11,13 @@ GeneratedPluginRegistrant.java
 key.properties
 **/*.keystore
 **/*.jks
+
+# .NET / ASP.NET Core
+**/bin/
+**/obj/
+*.user
+*.suo
+.vs/
+
+# Firebase local configuration
+android/app/google-services.json

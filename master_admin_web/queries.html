@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MasterAdmin - Queries</title>
+  <style>
+    /* basic styles — you can style to match Parklays theme */
+    body { font-family: Poppins, sans-serif; padding: 20px; background:#F5F7F8; }
+    .list { width: 350px; float:left; }
+    .detail { margin-left: 380px; }
+    .query-item { padding:10px; background:white; margin-bottom:8px; border-radius:8px; cursor:pointer; }
+    .message { background:#fff; padding:10px; margin-bottom:8px; border-radius:8px; }
+    .status { font-weight:600; }
+  </style>
+</head>
+<body>
+  <h2>Queries</h2>
+  <div class="list" id="queriesList">Loading...</div>
+
+  <div class="detail" id="queryDetail" style="display:none;">
+    <h3 id="queryTitle"></h3>
+    <div id="messages"></div>
+    <div>
+      <select id="statusSelect">
+        <option value="New">New</option>
+        <option value="InProgress">In Progress</option>
+        <option value="Resolved">Resolved</option>
+      </select>
+    </div>
+    <textarea id="replyText" rows="4" style="width:100%;"></textarea><br>
+    <button id="sendReply">Send Reply</button>
+  </div>
+
+<script>
+async function loadQueries() {
+  const res = await fetch(`http://localhost:5049/api/masteradmin/queries/${id}`);
+  const queries = await res.json();
+  const list = document.getElementById('queriesList');
+  list.innerHTML = '';
+  queries.forEach(q => {
+    const el = document.createElement('div');
+    el.className = 'query-item';
+    el.innerHTML = `<div>#${q.id} - ${q.title}</div><div class="status">${q.status}</div><small>${new Date(q.createdAt).toLocaleString()}</small>`;
+    el.onclick = () => openQuery(q.id);
+    list.appendChild(el);
+  });
+}
+
+async function openQuery(id) {
+  const res = await fetch(`http://localhost:5049/api/masteradmin/queries/${id}`);
+  const q = await res.json();
+  document.getElementById('queryTitle').textContent = `#${q.id} — ${q.title} (${q.status})`;
+  const messagesDiv = document.getElementById('messages');
+  messagesDiv.innerHTML = '';
+  (q.messages || []).forEach(m => {
+    const mEl = document.createElement('div');
+    mEl.className = 'message';
+    mEl.innerHTML = `<small>${m.senderType} @ ${new Date(m.createdAt).toLocaleString()}</small><p>${m.messageText}</p>`;
+    messagesDiv.appendChild(mEl);
+  });
+  document.getElementById('queryDetail').style.display = 'block';
+  document.getElementById('sendReply').onclick = () => sendReply(q.id);
+}
+
+async function sendReply(queryId) {
+  const text = document.getElementById('replyText').value.trim();
+  const newStatus = document.getElementById('statusSelect').value;
+  if (!text) return alert('Write a message');
+  const payload = {
+    queryId,
+    senderType: 'MasterAdmin',
+    senderId: 1, // replace with logged-in masteradmin id
+    messageText: text,
+    newStatus
+  };
+  const res = await fetch('http://localhost:5049/api/queries/reply', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+  if (res.ok) {
+    alert('Reply sent');
+    document.getElementById('replyText').value = '';
+    openQuery(queryId); // refresh thread
+    loadQueries(); // refresh list
+  } else {
+    alert('Failed to send reply');
+    console.error(await res.text());
+  }
+}
+
+loadQueries();
+</script>
+</body>
+</html>

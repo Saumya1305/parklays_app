@@ -45,7 +45,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       final token = await _storage.read(key: 'jwt_token');
 
       final response = await http.post(
-        Uri.parse('http://YOUR_BACKEND_URL/api/user/profile'),
+        Uri.parse('http://10.193.188.44:5155/api/user/profile'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

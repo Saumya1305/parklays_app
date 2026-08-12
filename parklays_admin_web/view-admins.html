@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Admins | Parklays</title>
+
+    <style>
+        /* ======================= COLOR VARIABLES MATCH DASHBOARD ======================= */
+        :root {
+            --dark-black: #060606;
+            --lime-green: #D7EE46;
+            --soft-white: #EFF0EF;
+            --pure-white: #FFFFFF;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            background: var(--soft-white);
+        }
+
+        /* ======================= NAVBAR ======================= */
+        .navbar {
+            background: var(--dark-black);
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            color: var(--lime-green);
+            font-size: 22px;
+            font-weight: 600;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .navbar a {
+            color: var(--lime-green);
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 17px;
+            padding: 8px 16px;
+            font-weight: 500;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .navbar a:hover {
+            background: var(--lime-green);
+            color: var(--dark-black);
+        }
+
+        /* ======================= TABLE CONTAINER ======================= */
+        .table-container {
+            width: 92%;
+            margin: 40px auto;
+            background: var(--pure-white);
+            padding: 30px;
+            border-radius: 28px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            border: 2px solid var(--dark-black);
+        }
+
+        #totalCount {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark-black);
+        }
+
+        /* ======================= TABLE ======================= */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .admin-table th {
+            background: var(--dark-black);
+            padding: 14px;
+            font-weight: bold;
+            text-align: center;
+            color: var(--lime-green);
+            font-size: 15px;
+        }
+
+        .admin-table td {
+            padding: 13px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            background: var(--pure-white);
+        }
+
+        .admin-table tr:hover td {
+            background: var(--soft-white);
+        }
+
+        .placeholder {
+            padding: 20px;
+            text-align: center;
+            color: grey;
+            background: var(--pure-white);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ======================= NAVBAR ======================= -->
+    <div class="navbar">
+        <div>SuperAdmin</div>
+        <div>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="add-admin.html">Add Admin</a>
+            <a href="view-admins.html">View Admins</a>
+            <a href="index.html">Logout</a>
+        </div>
+    </div>
+
+    <!-- ======================= TABLE CARD ======================= -->
+    <div class="table-container">
+        <div id="totalCount">Total Admins: -</div>
+
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>DOB</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Lot ID</th>
+                    <th>Mall Name</th>
+                    <th>Active</th>
+                    <th>Created By</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+
+            <tbody id="admin-table-body">
+                <!-- JS Inserts Rows Here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        if (!localStorage.getItem("superadmin_id")) {
+            localStorage.setItem("superadmin_id", 1);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => loadAdmins());
+
+        async function loadAdmins() {
+            const superAdminId = localStorage.getItem("superadmin_id");
+            const tableBody = document.getElementById("admin-table-body");
+            const totalCount = document.getElementById("totalCount");
+
+            tableBody.innerHTML = `<tr><td colspan="10" class="placeholder">Loading admins...</td></tr>`;
+
+            try {
+                const res = await fetch(`http://localhost:5049/api/superadmin/${superAdminId}/admins`);
+
+                if (!res.ok) throw new Error("Failed to load admins");
+
+                const admins = await res.json();
+                totalCount.textContent = `Total Admins: ${admins.length}`;
+
+                if (admins.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="10" class="placeholder">No admins found</td></tr>`;
+                    return;
+                }
+
+                tableBody.innerHTML = "";
+
+                admins.forEach((admin, index) => {
+                    tableBody.innerHTML += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${admin.name || "-"}</td>
+                            <td>${admin.dob ? new Date(admin.dob).toLocaleDateString("en-GB") : "-"}</td>
+                            <td>${admin.email || "-"}</td>
+                            <td>${admin.phone || "-"}</td>
+                            <td>${admin.lotId || "-"}</td>
+                            <td>${admin.mallName || "-"}</td>
+                            <td>${admin.isActive ? "Yes" : "No"}</td>
+                            <td>${admin.createdBy || "-"}</td>
+                            <td>${admin.createdAt ? new Date(admin.createdAt).toLocaleDateString("en-GB") : "-"}</td>
+                        </tr>
+                    `;
+                });
+
+            } catch (err) {
+                console.error(err);
+                tableBody.innerHTML = `<tr><td colspan="10" class="placeholder">Error loading admins</td></tr>`;
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard | Parklays</title>
+
+    <style>
+        :root {
+            --darkBlack: #060606;
+            --limeGreen: #D7EE46;
+            --softWhite: #EFF0EF;
+            --pureWhite: #FFFFFF;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: var(--softWhite);
+        }
+
+        /* ======================= NAVBAR (SAME AS VIEW ADMINS) ======================= */
+        .navbar {
+            background: var(--darkBlack);
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--limeGreen);
+            font-size: 22px;
+            font-weight: 600;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .navbar a {
+            color: var(--limeGreen);
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 17px;
+            padding: 8px 16px;
+            font-weight: 500;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .navbar a:hover {
+            background: var(--limeGreen);
+            color: var(--darkBlack);
+        }
+
+        /* MAIN WRAPPER – SAME AS BEFORE */
+        .page-container {
+            width: 92%;
+            margin: 40px auto;
+            background: var(--pureWhite);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            color: var(--darkBlack);
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        p {
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* BUTTONS */
+        .modern-btn {
+            padding: 16px 22px;
+            background: var(--pureWhite);
+            color: var(--darkBlack);
+            border-radius: 18px;
+            font-size: 16px;
+            font-weight: 600;
+            border: 2px solid var(--limeGreen);
+            cursor: pointer;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+            transition: 0.3s;
+            margin-right: 15px;
+        }
+
+        .modern-btn:hover {
+            background: var(--limeGreen);
+            color: var(--darkBlack);
+        }
+
+        /* MODALS */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: rgba(0,0,0,0.35);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            width: 380px !important;
+            margin: 9% auto;
+            padding: 24px;
+            background: var(--pureWhite);
+            border-radius: 22px;
+            animation: pop 0.25s ease-out;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+        }
+
+        @keyframes pop {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-content input,
+        .modal-content textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            background: var(--softWhite);
+            border: 1px solid #ccc;
+            border-radius: 14px;
+            font-size: 15px;
+        }
+
+        .modal-content button {
+            width: 100%;
+            padding: 12px;
+            background: var(--limeGreen);
+            color: var(--darkBlack);
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.25s;
+            margin-top: 15px;
+        }
+
+        .modal-content button:hover {
+            background: var(--darkBlack);
+            color: var(--limeGreen);
+        }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            font-size: 26px;
+            font-weight: bold;
+            color: #444;
+            transition: 0.25s;
+        }
+
+        .close-btn:hover {
+            color: var(--darkBlack);
+        }
+
+        .query-item {
+            background: var(--softWhite);
+            border: 1px solid #ddd;
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ======================= NEW NAVBAR ======================= -->
+<div class="navbar">
+    <div>SuperAdmin</div>
+    <div>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="add-admin.html">Add Admin</a>
+        <a href="view-admins.html">View Admins</a>
+        <a href="index.html">Logout</a>
+    </div>
+</div>
+
+<!-- MAIN PAGE -->
+<div class="page-container">
+    <h2>Dashboard</h2>
+    <p>Manage admins and parking data from here.</p>
+
+    <button id="queriesRaisedBtn" class="modern-btn">Queries Raised</button>
+    <button id="helpBtn" class="modern-btn">Help / Report Issue</button>
+</div>
+
+<!-- QUERIES MODAL -->
+<div id="queriesRaisedModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeQueriesModal">&times;</span>
+        <h2>Queries Raised</h2>
+        <div id="queriesList" style="max-height:400px; overflow-y:auto;"></div>
+    </div>
+</div>
+
+<!-- HELP MODAL -->
+<div id="helpModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeHelpModal">&times;</span>
+        <h2>Report Issue</h2>
+        <input type="text" id="helpTitle" placeholder="Short title">
+        <textarea id="helpDescription" rows="4" placeholder="Describe your issue"></textarea>
+        <button id="submitHelpBtn">Send</button>
+    </div>
+</div>
+
+<!-- JS (UNCHANGED) -->
+<script>
+/* SAME JS – NOT EDITED */
+document.getElementById("helpBtn").addEventListener("click", () => {
+    document.getElementById("helpModal").style.display = "block";
+});
+document.getElementById("closeHelpModal").addEventListener("click", () => {
+    document.getElementById("helpModal").style.display = "none";
+});
+window.onclick = function(event) {
+    if (event.target === document.getElementById("helpModal")) {
+        document.getElementById("helpModal").style.display = "none";
+    }
+};
+document.getElementById("submitHelpBtn").addEventListener("click", async() => {
+    const title = document.getElementById("helpTitle").value.trim();
+    const message = document.getElementById("helpDescription").value.trim();
+    const superAdminId = localStorage.getItem("superadmin_id");
+    if(!title || !message){ alert("Fill all fields"); return; }
+    try {
+        await fetch("http://localhost:5049/api/masteradmin/queries/create",{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            body: JSON.stringify({title,messageText:message,superAdminId:Number(superAdminId)})
+        });
+        alert("Help request sent!");
+        document.getElementById("helpModal").style.display="none";
+        document.getElementById("helpTitle").value="";
+        document.getElementById("helpDescription").value="";
+    } catch {
+        alert("Failed to send help request.");
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    const queriesBtn=document.getElementById("queriesRaisedBtn");
+    const queriesModal=document.getElementById("queriesRaisedModal");
+    const closeQueriesBtn=document.getElementById("closeQueriesModal");
+    const queriesList=document.getElementById("queriesList");
+
+    queriesBtn.addEventListener("click", async() => {
+        const superAdminId=localStorage.getItem("superadmin_id");
+        try {
+            const res=await fetch(`http://localhost:5049/api/masteradmin/queries/superadmin/${superAdminId}`);
+            if(!res.ok) throw new Error("Failed to load queries");
+            const data=await res.json();
+            queriesList.innerHTML="";
+            if(data.length===0){
+                queriesList.innerHTML="<p>No queries found.</p>";
+            } else {
+                data.forEach(q => {
+                    const qDiv=document.createElement("div");
+                    qDiv.className="query-item";
+
+                    let messagesHTML="";
+                    (q.messages||[]).forEach(m => {
+                        if(!m) return;
+                        messagesHTML += `<div style="margin:6px 0; padding:8px; background:${m.senderType==='SuperAdmin'?'#D7EE46':'#e0f7fa'}; border-radius:10px;">
+                            <strong>${m.senderType}:</strong> ${m.messageText}<br>
+                            <small>${new Date(m.createdAt).toLocaleString()}</small>
+                        </div>`;
+                    });
+
+                    qDiv.innerHTML = `
+                        <strong>Query #${q.id}:</strong> ${q.title}<br>
+                        <small>Status: ${q.status}</small>
+                        <div style="margin-top:8px;">${messagesHTML}</div>
+                    `;
+
+                    queriesList.appendChild(qDiv);
+                });
+            }
+            queriesModal.style.display="block";
+        } catch(err) {
+            alert("Failed to load queries raised.");
+        }
+    });
+
+    closeQueriesBtn.addEventListener("click", () => {
+        queriesModal.style.display="none";
+    });
+
+    window.addEventListener("click", e => {
+        if(e.target === queriesModal){
+            queriesModal.style.display="none";
+        }
+    });
+});
+</script>
+
+</body>
+</html>

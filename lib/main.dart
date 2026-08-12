@@ -1,70 +1,378 @@
 
+
+// import 'package:flutter/material.dart';
+// import 'dart:async';
+
+// // Firebase imports
+// import 'package:firebase_core/firebase_core.dart';
+// import 'firebase_options.dart';
+
+// // Localization imports
+// import 'package:flutter_localizations/flutter_localizations.dart';
+// import 'l10n/l10n.dart'; // ✅ Use generated localization file
+// import 'package:provider/provider.dart';
+// import 'locale_provider.dart';
+
+// // Screens
+// import 'phone_number_screen.dart';
+// import 'profile_page.dart';
+// import 'history_page.dart';
+
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+
+//   try {
+//     await Firebase.initializeApp(
+//       options: DefaultFirebaseOptions.currentPlatform,
+//     );
+//   } catch (e) {
+//     debugPrint("🔥 Firebase init failed: $e");
+//   }
+
+//   runApp(
+//     ChangeNotifierProvider(
+//       create: (_) => LocaleProvider(),
+//       child: const ParklaysApp(),
+//     ),
+//   );
+// }
+
+// class ParklaysApp extends StatelessWidget {
+//   const ParklaysApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final provider = Provider.of<LocaleProvider>(context);
+
+//     return MaterialApp(
+//       title: 'Parklays',
+//       debugShowCheckedModeBanner: false,
+//       theme: ThemeData(
+//         fontFamily: 'Orbitron',
+//         scaffoldBackgroundColor: const Color(0xFF101014),
+//       ),
+
+//       // ✅ Localization setup
+//       locale: provider.locale,
+//       localizationsDelegates: S.localizationsDelegates,
+//       supportedLocales: S.supportedLocales,
+
+//       home: const SplashScreen(),
+//       routes: {
+//         '/profile': (_) => const ProfilePage(),
+//         '/phoneNumber': (_) => const PhoneNumberScreen(),
+//         '/history': (_) => const HistoryPage(),
+//       },
+//     );
+//   }
+// }
+
+// class SplashScreen extends StatefulWidget {
+//   const SplashScreen({super.key});
+
+//   @override
+//   State<SplashScreen> createState() => _SplashScreenState();
+// }
+
+// class _SplashScreenState extends State<SplashScreen>
+//     with TickerProviderStateMixin {
+//   late final AnimationController _logoPulseController;
+//   late final AnimationController _logoExpandController;
+//   late final AnimationController _textFadeController;
+//   late final Animation<double> _pulseAnimation;
+//   late final Animation<double> _expandAnimation;
+//   late final Animation<double> _fadeAnimation;
+
+//   final String fullText = "YOUR SPACE, JUST A TAP AWAY...";
+//   String visibleText = "";
+//   int _charIndex = 0;
+
+//   @override
+//   void initState() {
+//     super.initState();
+
+//     // Subtle logo pulsing
+//     _logoPulseController = AnimationController(
+//       vsync: this,
+//       duration: const Duration(seconds: 1),
+//     )..repeat(reverse: true);
+
+//     _pulseAnimation = Tween<double>(begin: 0.9, end: 1.05).animate(
+//       CurvedAnimation(parent: _logoPulseController, curve: Curves.easeInOut),
+//     );
+
+//     // Expansion flash
+//     _logoExpandController = AnimationController(
+//       vsync: this,
+//       duration: const Duration(milliseconds: 800),
+//     );
+
+//     _expandAnimation = Tween<double>(begin: 1.0, end: 10.0).animate(
+//       CurvedAnimation(parent: _logoExpandController, curve: Curves.easeIn),
+//     );
+
+//     // Text fade
+//     _textFadeController = AnimationController(
+//       vsync: this,
+//       duration: const Duration(milliseconds: 600),
+//     );
+
+//     _fadeAnimation =
+//         Tween<double>(begin: 1.0, end: 0.0).animate(_textFadeController);
+
+//     // Typewriter animation
+//     Timer.periodic(const Duration(milliseconds: 100), (timer) {
+//       if (_charIndex < fullText.length) {
+//         setState(() {
+//           visibleText += fullText[_charIndex];
+//           _charIndex++;
+//         });
+//       } else {
+//         timer.cancel();
+//         Future.delayed(const Duration(seconds: 2), () {
+//           _textFadeController.forward();
+//           _logoPulseController.stop();
+//           _logoExpandController.forward();
+
+//           Future.delayed(const Duration(milliseconds: 900), () {
+//             Navigator.of(context).pushReplacement(
+//               PageRouteBuilder(
+//                 pageBuilder: (_, __, ___) => const PhoneNumberScreen(),
+//                 transitionsBuilder: (_, anim, __, child) => FadeTransition(
+//                   opacity: anim,
+//                   child: child,
+//                 ),
+//                 transitionDuration: const Duration(milliseconds: 700),
+//               ),
+//             );
+//           });
+//         });
+//       }
+//     });
+//   }
+
+//   @override
+//   void dispose() {
+//     _logoPulseController.dispose();
+//     _logoExpandController.dispose();
+//     _textFadeController.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Stack(
+//         alignment: Alignment.center,
+//         children: [
+//           // 🌈 Background gradient
+//           Container(
+//             decoration: const BoxDecoration(
+//               gradient: LinearGradient(
+//                 colors: [
+//                   Color(0xFF181818),
+//                   Color(0xFF1C1B22),
+//                   Color(0xFF27293D),
+//                   Color(0xFF3A3B59),
+//                 ],
+//                 begin: Alignment.topLeft,
+//                 end: Alignment.bottomRight,
+//               ),
+//             ),
+//           ),
+
+//           // ✨ Softer glowing logo (reduced brightness)
+//           Center(
+//             child: ScaleTransition(
+//               scale: _expandAnimation,
+//               child: Container(
+//                 width: 150,
+//                 height: 150,
+//                 decoration: const BoxDecoration(
+//                   shape: BoxShape.circle,
+//                   color: Color.fromARGB(255, 192, 193, 190), // 🌿 softer pastel instead of pure white
+//                   boxShadow: [
+//                     BoxShadow(
+//                       color: Color(0xFFD8F2B0), // softer glow, less harsh
+//                       blurRadius: 30, // reduced from 40
+//                       spreadRadius: 3, // reduced from 5
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+
+//           // 🌀 Pulsing Parklays Logo
+//           Center(
+//             child: ScaleTransition(
+//               scale: _pulseAnimation,
+//               child: Image.asset(
+//                 "assets/images/Logoo.png",
+//                 width: 160,
+//                 height: 160,
+//               ),
+//             ),
+//           ),
+
+//           // 💬 Tagline text with fade
+//           Positioned(
+//             bottom: 100,
+//             child: FadeTransition(
+//               opacity: _fadeAnimation,
+//               child: Text(
+//                 visibleText,
+//                 textAlign: TextAlign.center,
+//                 style: const TextStyle(
+//                   color: Color(0xFFE0E0E0),
+//                   fontSize: 18,
+//                   letterSpacing: 2,
+//                   fontWeight: FontWeight.w700,
+//                   shadows: [
+//                     Shadow(
+//                       blurRadius: 10,
+//                       color: Color.fromARGB(255, 170, 171, 168), // softened to match glow
+//                       offset: Offset(0, 0),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
+
+
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'phone_number_screen.dart';
 
-void main() {
-  runApp(ParklaysApp());
+// Firebase imports
+import 'package:firebase_core/firebase_core.dart';
+import 'package:parklays/role_selection_screen.dart';
+import 'firebase_options.dart';
+
+// Localization imports
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/l10n.dart'; // ✅ Use generated localization file
+import 'package:provider/provider.dart';
+import 'locale_provider.dart';
+
+// Screens
+import 'phone_number_screen.dart';
+import 'profile_page.dart';
+import 'history_page.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint("🔥 Firebase init failed: $e");
+  }
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => LocaleProvider(),
+      child: const ParklaysApp(),
+    ),
+  );
 }
 
 class ParklaysApp extends StatelessWidget {
+  const ParklaysApp({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<LocaleProvider>(context);
+
     return MaterialApp(
       title: 'Parklays',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'Orbitron',
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: const Color(0xFF101014),
       ),
-      home: SplashScreen(),
+      locale: provider.locale,
+      supportedLocales: S.supportedLocales,
+      localizationsDelegates: const [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: const SplashScreen(),
+      routes: {
+        '/profile': (_) => const ProfilePage(),
+        '/phoneNumber': (_) => const PhoneNumberScreen(),
+        '/history': (_) => const HistoryPage(userPhone: ""),
+      },
     );
   }
 }
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
-  late AnimationController _slideController;
-  late Animation<Offset> _slideAnimation;
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin {
+  late final AnimationController _logoPulseController;
+  late final AnimationController _logoExpandController;
+  late final AnimationController _textFadeController;
+  late final Animation<double> _pulseAnimation;
+  late final Animation<double> _expandAnimation;
+  late final Animation<double> _fadeAnimation;
 
-  late AnimationController _pulseController;
-  late Animation<double> _pulseAnimation;
-
-  String fullText = 'PARKLAYS';
-  String visibleText = '';
+  final String fullText = "YOUR SPACE, JUST A TAP AWAY...";
+  String visibleText = "";
   int _charIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
-    _slideController = AnimationController(
-      duration: Duration(milliseconds: 1000),
+    // Subtle logo pulsing
+    _logoPulseController = AnimationController(
       vsync: this,
-    );
-    _slideAnimation = Tween<Offset>(
-      begin: Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _slideController,
-      curve: Curves.easeOut,
-    ));
-
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: 1),
+      duration: const Duration(seconds: 1),
     )..repeat(reverse: true);
 
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(CurvedAnimation(
-      parent: _pulseController,
-      curve: Curves.easeInOut,
-    ));
+    _pulseAnimation = Tween<double>(begin: 0.9, end: 1.05).animate(
+      CurvedAnimation(parent: _logoPulseController, curve: Curves.easeInOut),
+    );
 
-    Timer.periodic(Duration(milliseconds: 120), (timer) {
+    // Expansion flash
+    _logoExpandController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
+    _expandAnimation = Tween<double>(begin: 1.0, end: 10.0).animate(
+      CurvedAnimation(parent: _logoExpandController, curve: Curves.easeIn),
+    );
+
+    // Text fade
+    _textFadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+
+    _fadeAnimation =
+        Tween<double>(begin: 1.0, end: 0.0).animate(_textFadeController);
+
+    // Typewriter animation
+    Timer.periodic(const Duration(milliseconds: 100), (timer) {
       if (_charIndex < fullText.length) {
         setState(() {
           visibleText += fullText[_charIndex];
@@ -72,12 +380,24 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         });
       } else {
         timer.cancel();
-        _slideController.forward();
-        Future.delayed(Duration(seconds: 2), () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => PhoneNumberScreen()),
-          );
+        Future.delayed(const Duration(seconds: 2), () {
+          _textFadeController.forward();
+          _logoPulseController.stop();
+          _logoExpandController.forward();
+
+          Future.delayed(const Duration(milliseconds: 900), () {
+            Navigator.of(context).pushReplacement(
+              PageRouteBuilder(
+                pageBuilder: (_, __, ___) => const RoleSelectionScreen(),
+                transitionsBuilder: (_, anim, __, child) => FadeTransition(
+                  opacity: anim,
+                  child: child,
+                ),
+                transitionDuration: const Duration(milliseconds: 700),
+              ),
+            );
+
+          });
         });
       }
     });
@@ -85,8 +405,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   @override
   void dispose() {
-    _slideController.dispose();
-    _pulseController.dispose();
+    _logoPulseController.dispose();
+    _logoExpandController.dispose();
+    _textFadeController.dispose();
     super.dispose();
   }
 
@@ -94,55 +415,76 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
+        alignment: Alignment.center,
         children: [
-          // White background (already default)
-          Container(color: Colors.white),
+          // 🌈 Background gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFF181818),
+                  Color(0xFF1C1B22),
+                  Color(0xFF27293D),
+                  Color(0xFF3A3B59),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+          ),
 
-          // Glowing animated car icon
-          Align(
-            alignment: Alignment.center,
+          // ✨ Animated glowing logo
+          Center(
             child: ScaleTransition(
-              scale: _pulseAnimation,
+              scale: _expandAnimation,
               child: Container(
-                width: 110, // Enlarged size
-                height: 110,
-                decoration: BoxDecoration(
-                  color: Color(0xFF508A1E), // Green bubble
+                width: 150,
+                height: 150,
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
+                  color: Color(0xFFE7F3C7),
                   boxShadow: [
                     BoxShadow(
-                      color: Color(0xFF0C1633).withOpacity(0.4), // Deep navy glow
-                      blurRadius: 30,
-                      spreadRadius: 6,
+                      color: Color(0xFFE7F3C7),
+                      blurRadius: 40,
+                      spreadRadius: 5,
                     ),
                   ],
-                ),
-                child: Icon(
-                  Icons.directions_car_filled,
-                  color: Colors.white,
-                  size: 55, // Bigger icon
                 ),
               ),
             ),
           ),
 
-          // Parklays text with typewriter effect (shifted upward)
-          Align(
-            alignment: Alignment(0, 0.6), // Move upward from bottom
-            child: SlideTransition(
-              position: _slideAnimation,
+          // 🌀 Pulsing Parklays Logo
+          Center(
+            child: ScaleTransition(
+              scale: _pulseAnimation,
+              child: Image.asset(
+                "assets/images/Logoo.png",
+                width: 160,
+                height: 160,
+              ),
+            ),
+          ),
+
+          // 💬 Tagline text with fade
+          Positioned(
+            bottom: 100,
+            child: FadeTransition(
+              opacity: _fadeAnimation,
               child: Text(
                 visibleText,
-                style: TextStyle(
-                  fontSize: 42,
-                  color: Color(0xFF0C1633), // Deep navy text
-                  letterSpacing: 4,
-                  fontWeight: FontWeight.w900,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color(0xFFE0E0E0),
+                  fontSize: 18,
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.w700,
                   shadows: [
                     Shadow(
                       blurRadius: 10,
-                      color: Colors.black.withOpacity(0.2),
-                      offset: Offset(0, 2),
+                      color: Color(0xFFE7F3C7),
+                      offset: Offset(0, 0),
                     ),
                   ],
                 ),
@@ -154,3 +496,4 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     );
   }
 }
+

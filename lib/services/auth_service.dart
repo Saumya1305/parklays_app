@@ -46,33 +46,83 @@
 
 
 
-import 'dart:async';
-import 'dart:math';
+// import 'dart:async';
+// import 'dart:math';
+
+// class AuthService {
+//   static String? _lastGeneratedOtp;
+
+//   // Generates OTP and returns it
+//   static Future<String?> sendOtp(String phoneNumber) async {
+//     await Future.delayed(const Duration(seconds: 1));
+
+//     // Generate random 6-digit OTP
+//     final random = Random();
+//     _lastGeneratedOtp = (100000 + random.nextInt(900000)).toString();
+
+//     print("📩 Mock OTP for $phoneNumber: $_lastGeneratedOtp"); // Debug console
+
+//     return _lastGeneratedOtp;
+//   }
+
+//   // Verifies OTP and returns mock JWT token
+//   static Future<String?> verifyOtp(String phoneNumber, String otpCode) async {
+//     await Future.delayed(const Duration(seconds: 1));
+
+//     if (otpCode == _lastGeneratedOtp) {
+//       return "mock-jwt-token-${DateTime.now().millisecondsSinceEpoch}";
+//     } else {
+//       throw Exception("Invalid OTP");
+//     }
+//   }
+// }
+
+
+
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
-  static String? _lastGeneratedOtp;
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Generates OTP and returns it
-  static Future<String?> sendOtp(String phoneNumber) async {
-    await Future.delayed(const Duration(seconds: 1));
-
-    // Generate random 6-digit OTP
-    final random = Random();
-    _lastGeneratedOtp = (100000 + random.nextInt(900000)).toString();
-
-    print("📩 Mock OTP for $phoneNumber: $_lastGeneratedOtp"); // Debug console
-
-    return _lastGeneratedOtp;
+  /// Send OTP to phone number
+  static Future<void> sendOtp({
+    required String phoneNumber,
+    required Function(String verificationId) codeSent,
+    required Function(String error) onError,
+  }) async {
+    await _auth.verifyPhoneNumber(
+      phoneNumber: '+91$phoneNumber', // add country code
+      timeout: const Duration(seconds: 60),
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        // Auto verification on some devices
+        await _auth.signInWithCredential(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        onError(e.message ?? "Verification failed");
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        codeSent(verificationId);
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
   }
 
-  // Verifies OTP and returns mock JWT token
-  static Future<String?> verifyOtp(String phoneNumber, String otpCode) async {
-    await Future.delayed(const Duration(seconds: 1));
+  /// Verify OTP
+  static Future<User?> verifyOtp(String verificationId, String otp) async {
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: verificationId,
+      smsCode: otp,
+    );
 
-    if (otpCode == _lastGeneratedOtp) {
-      return "mock-jwt-token-${DateTime.now().millisecondsSinceEpoch}";
-    } else {
-      throw Exception("Invalid OTP");
+    UserCredential userCredential =
+        await _auth.signInWithCredential(credential);
+    return userCredential.user;
+  }
+  /// Normalize phone number for backend
+  static String normalizePhone(String phone) {
+    if (phone.startsWith("+91")) {
+      return phone.substring(3); // remove +91
     }
+    return phone;
   }
 }

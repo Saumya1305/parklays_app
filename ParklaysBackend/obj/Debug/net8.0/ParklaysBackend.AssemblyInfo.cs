@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ParklaysBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6bd59bb1a17d121a446484d8130c80e7d02ae96a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2738c4a10254d665d6352c0c42108a461fd31951")]
 [assembly: System.Reflection.AssemblyProductAttribute("ParklaysBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ParklaysBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="center-container">
+    <h2>Admins</h2>
+
+    <button onclick="window.location.href='dashboard.html'">⬅ Back</button>
+
+    <h3>Add Admin</h3>
+    <input id="adminName" placeholder="Admin Name">
+    <input id="adminPhone" placeholder="Phone Number">
+    <button onclick="createAdmin()">Add Admin</button>
+
+    <hr>
+
+    <div id="adminsList"></div>
+</div>
+
+<script src="js/api.js"></script>
+script src="js/admins.js"></script>
+
+</body>
+</html>

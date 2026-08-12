@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>SuperAdmin Login | Parklays</title>
+
+    <style>
+        :root {
+    --green: #D7EE46;
+    --black: #060606;
+    --offwhite: #EFF0EF;
+    --white: #FFFFFF;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    font-family: "Inter", sans-serif;
+    background: var(--black);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Glow Background */
+.background-wave,
+.background-wave2 {
+    position: absolute;
+    filter: blur(120px);
+    opacity: 0.35;
+    z-index: -1;
+}
+
+.background-wave {
+    top: -140px;
+    left: -100px;
+    width: 520px;
+    height: 520px;
+    background: var(--green);
+    border-radius: 45%;
+}
+
+.background-wave2 {
+    bottom: -160px;
+    right: -120px;
+    width: 520px;
+    height: 520px;
+    background: var(--green);
+    border-radius: 50%;
+}
+
+/* Login Card */
+.login-card {
+    width: 360px;
+    background: var(--black);
+    padding: 42px 34px;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.5);
+    text-align: center;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(25px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.title {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 28px;
+    letter-spacing: 0.5px;
+}
+
+/* Inputs */
+.login-card input {
+    width: 90%;
+    padding: 15px;
+    margin: 12px auto;
+    display: block;
+    background: rgba(255,255,255,0.08);
+    border: 1.5px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    font-size: 15px;
+    color: var(--white);
+    transition: 0.3s;
+}
+
+.login-card input::placeholder {
+    color: #bcbcbc;
+}
+
+.login-card input:focus {
+    border-color: var(--green);
+    background: rgba(215, 238, 70, 0.1);
+    box-shadow: 0 0 10px rgba(215, 238, 70, 0.3);
+    outline: none;
+}
+
+/* Password Wrapper */
+.input-wrapper {
+    width: 100%;
+    position: relative;
+    margin: 12px auto;
+}
+
+.input-wrapper input {
+    width: 90%;
+    padding: 15px 48px 15px 16px;
+}
+
+.toggle-eye {
+    position: absolute;
+    right: 35px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 19px;
+    color: var(--white);
+    opacity: 0.55;
+    transition: 0.2s;
+}
+
+.toggle-eye:hover {
+    opacity: 1;
+}
+
+/* Login Button */
+.login-card button {
+    margin-top: 20px;
+    width: 90%;
+    padding: 15px;
+    background: var(--green);
+    color: var(--black);
+    border: none;
+    border-radius: 14px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s;
+}
+
+.login-card button:hover {
+    background: #c8e243;
+    box-shadow: 0 0 12px rgba(215, 238, 70, 0.35);
+}
+
+/* Error Text */
+.error {
+    margin-top: 12px;
+    color: #ff4c4c;
+    font-size: 14px;
+    display: none;
+}
+
+    </style>
+</head>
+
+<body>
+
+    <div class="background-wave"></div>
+    <div class="background-wave2"></div>
+
+    <!-- LOGIN CARD -->
+    <div class="login-card">
+        <div class="title">SuperAdmin Login</div>
+
+        <input type="text" id="phone" placeholder="Phone Number" />
+
+        <div class="input-wrapper">
+            <input type="password" id="password" placeholder="Password">
+            <span class="toggle-eye" onclick="togglePassword()">👁️</span>
+        </div>
+
+        <button onclick="loginSuperAdmin()">Login</button>
+
+        <p id="errorMsg" class="error">Invalid phone or password</p>
+    </div>
+
+    <script src="./js/login.js"></script>
+
+    <!-- Password Toggle Script -->
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const eye = document.querySelector(".toggle-eye");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                eye.textContent = "🙈";
+            } else {
+                passwordInput.type = "password";
+                eye.textContent = "👁️";
+            }
+        }
+    </script>
+
+</body>
+</html>

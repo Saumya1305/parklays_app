@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Admin | Parklays</title>
+
+    <style>
+        :root {
+            --dark-black: #060606;
+            --lime-green: #D7EE46;
+            --soft-white: #EFF0EF;
+            --pure-white: #FFFFFF;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            background: var(--soft-white);
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: var(--dark-black);
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            color: var(--lime-green);
+            font-size: 22px;
+            font-weight: 600;
+            border-radius: 0 0 30px 30px;
+        }
+
+        .navbar a {
+            color: var(--lime-green);
+            text-decoration: none;
+            margin-left: 18px;
+            font-size: 17px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            transition: 0.2s;
+        }
+
+        .navbar a:hover {
+            background: var(--lime-green);
+            color: var(--dark-black);
+        }
+
+        .page-container {
+            width: 500px;
+            margin: 40px auto;
+            background: var(--pure-white);
+            padding: 30px;
+            border-radius: 28px;
+            border: 2px solid var(--dark-black);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            color: var(--dark-black);
+            text-align: center;
+            font-weight: 700;
+        }
+
+        form input, form select, form button {
+            width: 100%;
+            margin-top: 14px;
+            padding: 12px;
+            font-size: 15px;
+            border-radius: 14px;
+            border: 1px solid #bbb;
+            background: var(--soft-white);
+        }
+
+        form button {
+            background: var(--dark-black);
+            color: var(--lime-green);
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        form button:hover {
+            background: var(--lime-green);
+            color: var(--dark-black);
+        }
+
+        #msg {
+            margin-top: 12px;
+            color: green;
+            text-align: center;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div>SuperAdmin</div>
+    <div>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="add-admin.html">Add Admin</a>
+        <a href="view-admins.html">View Admins</a>
+        <a href="index.html">Logout</a>
+    </div>
+</div>
+
+<div class="page-container">
+    <h2>Add Admin</h2>
+
+    <form id="adminForm">
+        <input type="text" id="name" placeholder="Admin Name" required>
+        <input type="date" id="dob" placeholder="Date of Birth" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="phone" placeholder="Phone Number" required>
+        <input type="number" id="lotid" placeholder="Lot ID" required>
+
+        <select id="is_active" required>
+            <option value="">Is Active?</option>
+            <option value="true">Yes</option>
+            <option value="false">No</option>
+        </select>
+
+        <input type="text" id="created_by" placeholder="Created By" readonly>
+        <input type="text" id="created_at" placeholder="Created At" readonly>
+
+        <button type="submit">Add Admin</button>
+
+        <p id="msg"></p>
+    </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const superAdminId = localStorage.getItem("superadmin_id") || "1";
+    const createdByInput = document.getElementById("created_by");
+    const createdAtInput = document.getElementById("created_at");
+
+    createdByInput.value = superAdminId;
+    createdAtInput.value = new Date().toLocaleString("en-GB", {timeZone:"Asia/Kolkata"});
+});
+
+document.getElementById("adminForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const payload = {
+        name: document.getElementById("name").value,
+        dob: document.getElementById("dob").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        lotId: document.getElementById("lotid").value,
+        isActive: document.getElementById("is_active").value === "true",
+        createdBy: document.getElementById("created_by").value,
+        createdAt: new Date().toISOString()
+    };
+
+    try {
+        const res = await fetch("http://localhost:5049/api/superadmin/admins/add", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error();
+
+        document.getElementById("msg").textContent = "Admin added successfully!";
+        document.getElementById("adminForm").reset();
+        document.getElementById("created_by").value = payload.createdBy;
+        document.getElementById("created_at").value = new Date().toLocaleString("en-GB", {timeZone:"Asia/Kolkata"});
+
+    } catch {
+        document.getElementById("msg").textContent = "Failed to add admin.";
+    }
+});
+</script>
+
+</body>
+</html>

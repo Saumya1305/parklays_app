@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParklaysBackend", "ParklaysBackend\ParklaysBackend.csproj", "{38A3B052-9AC5-B930-F497-C09DFC2DF48B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{38A3B052-9AC5-B930-F497-C09DFC2DF48B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38A3B052-9AC5-B930-F497-C09DFC2DF48B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38A3B052-9AC5-B930-F497-C09DFC2DF48B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38A3B052-9AC5-B930-F497-C09DFC2DF48B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E014C35F-D3D2-4374-AF60-2DCE2876F2C2}
+	EndGlobalSection
+EndGlobal

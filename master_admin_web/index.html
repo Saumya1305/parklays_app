@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SuperAdmin Portal | Parklays</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+/* ===== Sidebar & Main Content =====
+body { margin:0; font-family: Arial, sans-serif; background:#f4f6f8; }
+.sidebar { width:220px;height:100vh;background:#1E88E5;color:#fff;padding:20px;position:fixed; }
+.sidebar h2{ color:#fff;margin-bottom:20px; }
+.sidebar button{ width:100%; margin:8px 0; padding:10px; border:none; border-radius:5px; cursor:pointer; background:#42A5F5;color:#fff; font-size:14px; }
+.sidebar button:hover{ background:#1976D2; }
+.main-content { margin-left:240px; padding:20px; }
+.card{ background:#fff; padding:20px; margin-bottom:20px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); }
+input, select, textarea{ width:100%; padding:10px; margin:8px 0; border-radius:6px; border:1px solid #ccc; }
+button.btn{ padding:8px 15px; border:none; border-radius:6px; cursor:pointer; }
+button.btn-edit{ background:#4CAF50;color:#fff; }
+button.btn-edit:hover{ background:#45a049; }
+button.btn-reply{ background:#2196F3;color:#fff;border:none;border-radius:4px;padding:6px 12px; cursor:pointer; }
+button.btn-reply:hover{ background:#1976d2; }
+table{ width:100%; border-collapse: collapse; }
+th, td{ border:1px solid #ccc; padding:10px; text-align:left; }
+th{ background:#f0f0f0; }
+.msg-error{ color:red; margin:5px 0; }
+.msg-success{ color:green; margin:5px 0; }
+
+/* Modal *
+.modal-overlay{ display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.55); z-index:900; }
+.modal{ display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); width:600px; max-height:80vh; overflow-y:auto; background:#fff; padding:25px; border-radius:10px; box-shadow:0 8px 20px rgba(0,0,0,0.25); z-index:1000; }
+.close-btn{ cursor:pointer; float:right; font-size:28px; color:#555; }
+.close-btn:hover{ color:#000; }
+.message-box{ background:#F1F1F1; padding:12px; border-radius:8px; margin-bottom:10px; }
+.message-box small{ color:#666; }
+.modal-select, .modal-textarea{ width:100%; padding:10px; margin:10px 0 15px; border:1px solid #ccc; border-radius:6px; }
+.modal-btn{ background-color:#4CAF50; color:white; padding:10px 18px; border:none; border-radius:6px; cursor:pointer; }
+.modal-btn:hover{ background-color:#3e8f41; } */
+
+/* ===== Global Styles ===== */
+body { 
+    margin:0; 
+    font-family: "Inter", Arial, sans-serif; 
+    background:#EFF0EF; /* softWhite */
+    color:#060606;       /* darkBlack */
+}
+
+/* ===== Sidebar ===== */
+/* ===== Sidebar (Expanded Width) ===== */
+.sidebar { 
+    width:260px;         /* increased from 220px to 260px */
+    height:100vh;
+    background:#060606;  /* darkBlack */
+    color:#fff;
+    padding:26px 22px;
+    position:fixed;
+    box-shadow:3px 0 15px rgba(0,0,0,0.25);
+}
+
+.sidebar h2{ 
+    margin-bottom:32px; 
+    font-size:22px;
+    font-weight:600;
+    color:#D7EE46; /* limeGreen */
+    font-family: "Inter", sans-serif;
+}
+
+/* ===== Sidebar Buttons (Rounded + New Font) ===== */
+.sidebar button{
+    width:100%; 
+    margin:12px 0; 
+    padding:13px; 
+    border:none; 
+    border-radius:12px;   /* more curved */
+    cursor:pointer; 
+    font-size:15px; 
+    font-weight:500;
+    font-family:"Inter", sans-serif;   /* updated font */
+    background:#1a1a1a; 
+    color:#EFF0EF;
+    transition:0.25s;
+    border:1px solid transparent;
+}
+
+.sidebar button:hover{ 
+    background:#D7EE46; 
+    color:#060606; 
+    border-color:#D7EE46;
+}
+
+
+/* ===== Main Content ===== */
+.main-content { 
+    margin-left:240px; 
+    padding:28px; 
+}
+
+/* ===== Cards ===== */
+.card{
+    background:#FFFFFF; /* pureWhite */
+    padding:28px; 
+    margin-bottom:24px; 
+    border-radius:14px; 
+    box-shadow:0 6px 20px rgba(0,0,0,0.08);
+    border:1px solid #dedede;
+}
+
+.card h3{
+    margin-bottom:18px;
+    color:#060606;
+    font-weight:600;
+    border-left:4px solid #D7EE46;
+    padding-left:12px;
+}
+
+/* ===== Inputs ===== */
+input, select, textarea{ 
+    width:100%; 
+    padding:12px; 
+    margin:12px 0; 
+    border-radius:8px; 
+    border:1px solid #c7c7c7;
+    background:#F7F7F7;
+    font-size:14px;
+    transition:0.25s;
+}
+
+input:focus, select:focus, textarea:focus{
+    background:#FFFFFF;
+    border-color:#D7EE46;
+    box-shadow:0 0 0 3px rgba(215,238,70,0.45);
+}
+
+/* ===== Buttons ===== */
+button.btn{ 
+    padding:10px 18px; 
+    border:none; 
+    border-radius:8px; 
+    cursor:pointer;
+    font-size:14px;
+    font-weight:500;
+    transition:0.25s;
+}
+
+button.btn-edit{ 
+    background:#060606;
+    color:#D7EE46;
+    border:1px solid #060606;
+}
+
+button.btn-edit:hover{ 
+    background:#D7EE46; 
+    color:#060606;
+}
+
+button.btn-reply{ 
+    background:#060606;
+    color:#D7EE46;
+    padding:7px 14px; 
+    border-radius:6px;
+    border:1px solid #060606;
+}
+
+button.btn-reply:hover{ 
+    background:#D7EE46; 
+    color:#060606;
+}
+
+/* ===== Table ===== */
+table{ 
+    width:100%; 
+    border-collapse: collapse; 
+    font-size:14px;
+}
+
+th, td{ 
+    border:1px solid #d6d6d6; 
+    padding:12px; 
+    text-align:left; 
+}
+
+th{ 
+    background:#EFF0EF;  /* softWhite */
+    font-weight:600;
+    color:#060606;
+    border-bottom:2px solid #D7EE46;
+}
+
+tbody tr:hover{
+    background:#F7F7F7;
+}
+
+/* ===== Messages ===== */
+.msg-error{ 
+    color:#b20000;
+    font-weight:600;
+}
+.msg-success{ 
+    color:#2E7D32;
+    font-weight:600;
+}
+
+/* ===== Modal ===== */
+.modal-overlay{ 
+    display:none; 
+    position:fixed; 
+    top:0; 
+    left:0; 
+    width:100%; 
+    height:100%; 
+    background:rgba(0,0,0,0.55); 
+    z-index:900; 
+}
+
+.modal{ 
+    display:none; 
+    position:fixed; 
+    top:50%; 
+    left:50%; 
+    transform:translate(-50%, -50%); 
+    width:600px; 
+    max-height:80vh; 
+    overflow-y:auto; 
+    background:#FFFFFF; 
+    padding:30px; 
+    border-radius:14px; 
+    box-shadow:0 12px 28px rgba(0,0,0,0.35); 
+    z-index:1000; 
+}
+
+.close-btn{ 
+    cursor:pointer; 
+    float:right; 
+    font-size:30px; 
+    color:#444; 
+}
+
+.close-btn:hover{ 
+    color:#000; 
+}
+
+.message-box{ 
+    background:#F7F7F7; 
+    padding:14px; 
+    border-radius:8px; 
+    margin-bottom:14px; 
+    border-left:5px solid #D7EE46;
+}
+
+.message-box small{ 
+    color:#777; 
+}
+
+.modal-select, .modal-textarea{ 
+    width:100%; 
+    padding:12px; 
+    margin:12px 0 18px; 
+    border:1px solid #bfbfbf; 
+    border-radius:8px; 
+}
+
+.modal-btn{ 
+    background-color:#060606; 
+    color:#D7EE46; 
+    padding:12px 20px; 
+    border:none; 
+    border-radius:8px; 
+    cursor:pointer;
+    font-size:15px;
+    transition:0.25s;
+}
+
+.modal-btn:hover{ 
+    background-color:#D7EE46; 
+    color:#060606;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+<h2>Master Admin</h2>
+<button id="superAdminBtn">SuperAdmin Management</button>
+<button id="queriesBtn">Queries Received</button>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+
+<div id="superAdminSection">
+<div class="card">
+<h3>Add New SuperAdmin</h3>
+<div id="errorBox" class="msg-error" style="display:none;"></div>
+<div id="successBox" class="msg-success" style="display:none;"></div>
+
+<form id="addSuperAdminForm">
+<input type="text" id="name" placeholder="Name" required>
+<input type="email" id="email" placeholder="Email" required>
+<input type="text" id="phone" placeholder="Phone" required>
+<input type="password" id="password" placeholder="Password" required>
+<input type="text" id="organization" placeholder="Organization (Optional)">
+<button type="submit" class="btn btn-edit">Add SuperAdmin</button>
+</form>
+</div>
+
+<!-- 🔥 UPDATED BLOCK STARTS HERE -->
+<div class="card">
+    <h3>SuperAdmins List</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Organization</th>
+                <th>CreatedAt</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="superAdminsTableBody"></tbody>
+    </table>
+</div>
+<!-- 🔥 UPDATED BLOCK ENDS HERE -->
+
+</div>
+
+<div id="queriesSection" style="display:none;">
+<div class="card">
+<h3>Queries Received</h3>
+<table class="styled-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>User Name</th>
+            <th>Email</th>
+            <th>Message</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="queriesTableBody"></tbody>
+</table>
+
+</div>
+</div>
+
+<!-- Modal -->
+<div id="queryModalOverlay" class="modal-overlay"></div>
+<div id="queryModal" class="modal">
+<span id="closeModal" class="close-btn">&times;</span>
+<h3 id="modalTitle">Query Details</h3>
+<div id="modalMessages"></div>
+<label for="statusSelect">Status</label>
+<select id="statusSelect" class="modal-select">
+<option value="Pending">Pending</option>
+<option value="InProgress">InProgress</option>
+<option value="Resolved">Resolved</option>
+</select>
+<textarea id="replyText" class="modal-textarea" rows="3" placeholder="Type your reply..."></textarea>
+<button id="sendReplyBtn" class="modal-btn">Send Reply</button>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MasterAdmin Portal | Parklays</title>
+<link rel="stylesheet" href="css/style.css">
+...
+</head>
+<body>
+
+<div class="sidebar">
+<h2>Master Admin</h2>
+<button id="superAdminBtn">SuperAdmin Management</button>
+<button id="queriesBtn">Queries Received</button>
+</div>
+
+<div class="main-content">
+
+<-- SUPERADMIN SECTION -->
+<!-- <div id="superAdminSection">
+<div class="card">
+<h3>Add New SuperAdmin</h3>
+
+<form id="addSuperAdminForm">
+<input type="text" name="name" placeholder="Name" required>
+<input type="email" name="email" placeholder="Email" required>
+<input type="text" name="phone" placeholder="Phone">
+<input type="password" name="password" placeholder="Password">
+<input type="text" name="organization" placeholder="Organization (Optional)">
+<button type="submit" class="btn btn-edit">Add SuperAdmin</button>
+</form>
+</div>
+
+<div class="card">
+<h3>SuperAdmins List</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Organization</th><th>CreatedAt</th>
+</tr>
+</thead>
+<tbody id="superAdminsTableBody"></tbody>
+</table>
+</div>
+</div> -->
+
+<!-- QUERIES -->
+<!-- <div id="queriesSection" style="display:none;">
+<div class="card">
+<h3>Queries Received</h3>
+
+<table class="styled-table">
+<thead>
+<tr>
+<th>ID</th>
+<th>User Name</th>
+<th>Email</th>
+<th>Message</th>
+<th>Status</th>
+<th>Date</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="queriesTableBody"></tbody>
+</table>
+
+</div>
+</div>
+
+</div> -->
+
+<!-- MODAL -->
+<!-- <div id="queryModalOverlay" class="modal-overlay"></div>
+<div id="queryModal" class="modal">
+<span id="closeModal" class="close-btn">&times;</span>
+<h3 id="modalTitle">Query Details</h3>
+<div id="modalMessages"></div>
+
+<select id="statusSelect" class="modal-select">
+<option value="Pending">Pending</option>
+<option value="InProgress">InProgress</option>
+<option value="Resolved">Resolved</option>
+</select>
+
+<textarea id="replyText" class="modal-textarea" rows="3"></textarea>
+<button id="sendReplyBtn" class="modal-btn">Send Reply</button>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html> --> 
